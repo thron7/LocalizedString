@@ -63,8 +63,8 @@ qx.Class.define("locale.Application",
       // Add button to document at fixed coordinates
       //doc.add(button1, {left: 100, top: 50});
 
-      var a = new locale.LocalizedString(['hugo']);
-      var b = new locale.LocalizedString([' berti']);
+      var a = new locale.ComposableLocalizedString(['hugo']);
+      var b = new locale.ComposableLocalizedString([' berti']);
       console.log(a.before("i saw ").after(" walking down the street").toString());
     }
   }
