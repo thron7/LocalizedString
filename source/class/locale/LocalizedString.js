@@ -23,22 +23,31 @@
  * same type or with literal strings, and can be re-translated into
  * different languages.
  */
-qx.Class.define("locale.LocalizedString",
+qx.Class.define("locale.ComposableLocalizedString",
 {
   extend : Object,
 
   /*
-   * new F(['foo']); or
-   * new F([['foo', ['one', 'two']]]); or
-   * new F(['foo', ['bar',['one','two']], 'baz']);
+   * new locale.ComposableLocalizedString(['foo']); or
+   * new locale.ComposableLocalizedString([['foo', ['one', 'two']]]); or
+   * new locale.ComposableLocalizedString(['foo', ['bar',['one','two']], 'baz']);
    */
   construct : function (arrFragments) {
+    /*
+     * _fragments = 
+     * [ 
+     *   'foo',
+     *   [<msgid>, [<translation_args>]],
+     *   'bar',
+     *   ...
+     * ]    
+     */
     this._fragments = arrFragments;
   },
 
   members : {
 
-    toString = function (){
+    toString : function (){
       var str = [];
       var frags = this._fragments;
       for (var i=0; i<frags.length; i++) {
@@ -49,25 +58,25 @@ qx.Class.define("locale.LocalizedString",
         }
       }
       return str.join("");
-    }
+    },
 
-    before = function (elem) {
-      if (elem instanceof F) {
-        return new F(elem._fragments.concat(this._fragments))
+    before : function (elem) {
+      if (elem instanceof locale.ComposableLocalizedString) {
+        return new locale.ComposableLocalizedString(elem._fragments.concat(this._fragments))
       } else {
-        return new F([elem].concat(this._fragments))
+        return new locale.ComposableLocalizedString([elem].concat(this._fragments))
       }
-    }
+    },
 
-    after = function (elem) {
-      if (elem instanceof F) {
-        return new F(this._fragments.concat(elem._fragments))
+    after : function (elem) {
+      if (elem instanceof locale.ComposableLocalizedString) {
+        return new locale.ComposableLocalizedString(this._fragments.concat(elem._fragments))
       } else {
-        return new F(this._fragments.concat([elem]))
+        return new locale.ComposableLocalizedString(this._fragments.concat([elem]))
       }
-    }
+    },
 
-    translate = function () {
+    translate : function () {
       var str = [];
       var frags = this._fragments;
       for (var i=0; i<frags.length; i++) {
